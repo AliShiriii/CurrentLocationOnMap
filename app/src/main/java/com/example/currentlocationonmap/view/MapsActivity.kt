@@ -47,6 +47,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    //fetchLocation
     private fun fetchLocation() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -146,6 +147,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
+    //drawMarker
     private fun drawMarker(latLong: LatLng) {
 
         val markerOptions = MarkerOptions().position(latLong).title("I am here").draggable(true)
@@ -157,10 +159,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    //insert latitude and latitude in room
     private fun insertLatLon(latLong: LatLng){
 
-        val mapModel = MapModel(0, latLong.latitude, latLong.longitude)
-        viewModel?.insertLatLon(mapModel)
+            val mapModel = MapModel(0, latLong.latitude, latLong.longitude)
+            viewModel?.insertLatLon(mapModel)
 
         Toast.makeText(
             applicationContext,
