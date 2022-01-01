@@ -16,7 +16,7 @@ object MapModule {
 
     @Provides
     @Singleton
-    fun provideFavoriteMoveDataBase(@ApplicationContext context: Context) =
+    fun provideMapDataBase(@ApplicationContext context: Context) =
         Room.databaseBuilder(
             context,
             MapDataBase::class.java,
@@ -25,6 +25,6 @@ object MapModule {
 
     @Provides
     @Singleton
-    fun provideFavoriteMoveDao(db: MapDataBase) = db.getDao()
+    fun provideMapDao(db: MapDataBase) = db.getDao()
 
 }

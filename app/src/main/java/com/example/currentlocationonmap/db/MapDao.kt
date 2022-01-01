@@ -8,12 +8,6 @@ import com.example.currentlocationonmap.model.MapModel
 interface MapDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertArticle(mapModel: MapModel)
-
-//    @Query("SELECT * FROM articles ")
-//    fun getAllArticle(): LiveData<List<Article>>
-//
-//    @Delete
-//    suspend fun deleteArticle(article: Article)
+    suspend fun insertLatLon(mapModel: MapModel)
 
 }

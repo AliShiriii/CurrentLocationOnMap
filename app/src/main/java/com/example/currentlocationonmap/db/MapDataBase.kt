@@ -4,8 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.currentlocationonmap.model.MapModel
 
-@Database(entities = [MapModel::class], version = 1, exportSchema = false)
+@Database(entities = [MapModel::class], version = 2, exportSchema = false)
 abstract class MapDataBase: RoomDatabase() {
 
-    abstract fun getDao() : MapDao
+    abstract fun getDao(): MapDao
 }

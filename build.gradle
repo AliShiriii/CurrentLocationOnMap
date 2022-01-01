@@ -2,7 +2,7 @@
 buildscript {
 
     ext {
-        kotlin_version = "1.5.20"
+        kotlin_version = "1.4.10"
         version_room = "2.2.6"
         version_multidex = "2.0.1"
         version_coroutine = "1.4.2"

@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.currentlocationonmap.R
 import com.example.currentlocationonmap.databinding.ActivityMapsBinding
+import com.example.currentlocationonmap.model.MapModel
+import com.example.currentlocationonmap.viewModel.MapViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,9 +28,10 @@ import java.util.*
 @AndroidEntryPoint
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-//    var address: String? = null
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    private val viewModel: MapViewModel? = null
+
     var fusedLocationProviderClient: FusedLocationProviderClient? = null
     var currentLocation: Location? = null
     var currentMarker: Marker? = null
@@ -131,9 +134,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     val latLon = LatLng(marker.position.latitude, marker.position.longitude)
 
+                    val mapModel = MapModel(0, latLon.latitude, latLon.longitude)
+                    viewModel?.insertLatLon(mapModel)
+
                     Toast.makeText(
                         applicationContext,
-                        "lat:${latLon.latitude}, lon${latLon.longitude}",
+                        "lat:${latLon.latitude}, lon${latLon.longitude} saved",
                         Toast.LENGTH_LONG
                     ).show()
 
