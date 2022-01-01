@@ -2,7 +2,6 @@ package com.example.currentlocationonmap.view
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import com.example.currentlocationonmap.R
 import com.example.currentlocationonmap.databinding.ActivityMapsBinding
 import com.example.currentlocationonmap.model.MapModel
+import com.example.currentlocationonmap.utils.Constants.Companion.REQUEST_CODE
 import com.example.currentlocationonmap.viewModel.MapViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -61,7 +61,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1000
+                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE
                 )
 
                 return
@@ -96,7 +96,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     ) {
         when (requestCode) {
 
-            1000 -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            REQUEST_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 if (ActivityCompat.checkSelfPermission(
                         this, android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -132,59 +132,40 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (currentMarker != null) {
                     currentMarker?.remove()
 
-                    val latLon = LatLng(marker.position.latitude, marker.position.longitude)
+                    val latLng = LatLng(marker.position.latitude, marker.position.longitude)
 
-                    val mapModel = MapModel(0, latLon.latitude, latLon.longitude)
-                    viewModel?.insertLatLon(mapModel)
+                    //add marker
+                    drawMarker(latLng)
 
-                    Toast.makeText(
-                        applicationContext,
-                        "lat:${latLon.latitude}, lon${latLon.longitude} saved",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    //insertLatLog into room
+                    insertLatLon(latLng)
 
-                    drawMarker(latLon)
                 }
             }
 
         })
     }
 
-    private fun drawMarker(latLng: LatLng) {
+    private fun drawMarker(latLong: LatLng) {
 
-        val markerOptions = MarkerOptions().position(latLng).title("I am here").draggable(true)
-//            .snippet(getAddress(latLng.latitude, latLng.longitude)).draggable(true)
+        val markerOptions = MarkerOptions().position(latLong).title("I am here").draggable(true)
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f))
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLong))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, 14f))
         currentMarker = mMap.addMarker(markerOptions)
         currentMarker?.showInfoWindow()
 
     }
 
-    private fun getAddress(lat: Double, lon: Double): String {
+    private fun insertLatLon(latLong: LatLng){
 
-        val geoCeder = Geocoder(this)
-        val address = geoCeder.getFromLocation(lat, lon, 1)
-        return address[0].getAddressLine(0)
+        val mapModel = MapModel(0, latLong.latitude, latLong.longitude)
+        viewModel?.insertLatLon(mapModel)
 
-//        try {
-//
-//            val geocoder = Geocoder(this, Locale.getDefault())
-//            val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
-//
-//            address = addresses[0].getAddressLine(0).toString()
-//            val city: String = addresses[0].getLocality()
-//            val state: String = addresses[0].getAdminArea()
-//            val country: String = addresses[0].getCountryName()
-//            val postalCode: String = addresses[0].getPostalCode()
-//            val knownName: String = addresses[0].getFeatureName()
-//
-//        } catch (e: Exception) {
-//
-//
-//        }
-//        return address!!
+        Toast.makeText(
+            applicationContext,
+            "latitude:${latLong.latitude}, longitude${latLong.longitude} saved", Toast.LENGTH_LONG).show()
+
     }
 
 }
