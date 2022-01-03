@@ -2,6 +2,8 @@ package com.example.currentlocationonmap.view
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
@@ -73,15 +75,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         task?.addOnSuccessListener { location ->
 
             if (location != null) {
-                this.currentLocation = location
-                Toast.makeText(
-                    this,
-                    "lat:${location.altitude}, lon${location.longitude}",
-                    Toast.LENGTH_LONG
-                ).show()
 
-                val mapFragment = supportFragmentManager
-                    .findFragmentById(R.id.map) as SupportMapFragment
+                this.currentLocation = location
+
+                Toast.makeText(this, "lat:${location.altitude}, lon${location.longitude}", Toast.LENGTH_LONG).show()
+
+                val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                 mapFragment.getMapAsync(this@MapsActivity)
 
             }
@@ -118,6 +117,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         drawMarker(LatLng(currentLocation!!.latitude, currentLocation!!.longitude))
+        insertLatLon(LatLng(currentLocation!!.latitude, currentLocation!!.longitude))
 
         mMap.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker) {
@@ -150,7 +150,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //drawMarker
     private fun drawMarker(latLong: LatLng) {
 
-        val markerOptions = MarkerOptions().position(latLong).title("I am here").draggable(true)
+        val markerOptions = MarkerOptions().position(latLong).title("I am here")
+            .draggable(true)
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLong))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, 14f))
@@ -162,12 +163,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //insert latitude and latitude in room
     private fun insertLatLon(latLong: LatLng){
 
-            val mapModel = MapModel(0, latLong.latitude, latLong.longitude)
-            viewModel?.insertLatLon(mapModel)
+        val mapModel = MapModel(0, latLong.latitude, latLong.longitude)
+        viewModel?.insertLatLon(mapModel)
 
         Toast.makeText(
-            applicationContext,
-            "latitude:${latLong.latitude}, longitude${latLong.longitude} saved", Toast.LENGTH_LONG).show()
+            applicationContext, "latitude:${latLong.latitude}, longitude${latLong.longitude} saved", Toast.LENGTH_LONG).show()
 
     }
 
